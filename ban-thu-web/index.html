@@ -577,10 +577,9 @@ function renderSide(){
   $('#side').innerHTML=`
     <div class="brand"><div class="brand-mark">TĐ</div><div><b>Tín Đức ERP</b><small>LVL · Plywood</small></div></div>
     <div class="nav-group">Điều hành</div>
-    ${item('bi','Dashboard Ban giám đốc','chart')}
-    <button class="nav" data-act="wallOpen">${ico('chart')}<span>Màn hình theo dõi</span><span class="later">↗</span></button>
     ${item('dash','Tổng quan','dash')}
     ${item('inbox','Việc cần xử lý','inbox',n?`<span class="badge">${n}</span>`:'')}
+    <button class="nav" data-act="wallOpen">${ico('chart')}<span>Màn hình theo dõi</span><span class="later">↗</span></button>
     <div class="nav-group">Sản xuất</div>
     ${item('prod','Lệnh sản xuất','factory')}
     ${item('review','Duyệt sản lượng','inbox',nRev?`<span class="badge">${nRev}</span>`:'')}
@@ -2728,7 +2727,7 @@ function renderWall(){wallAt=new Date().toLocaleTimeString('vi-VN');
     <div class="actions"><button class="btn" data-act="wallFull">⛶ Toàn màn hình</button><button class="btn" data-act="wallExit">← Về hệ thống</button></div></div>${renderBI()}</div>`;}
 Object.assign(A,{
   wallOpen:()=>{if(!isRole('gd','admin','ktt','tbp','qd','hc')){toast('Chỉ Ban giám đốc và trưởng các bộ phận xem được dashboard.');return;}closeModal();location.hash='dashboard';},
-  wallExit:()=>{try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}ui.view='bi';location.hash='';},
+  wallExit:()=>{try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}ui.view='dash';location.hash='';},
   wallFull:()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}catch(e){toast('Trình duyệt không cho bật toàn màn hình, hãy bấm F11.');}}
 });
 setInterval(()=>{if(location.hash==='#dashboard'&&!$('#modalRoot').innerHTML){load();render();}},60000);
