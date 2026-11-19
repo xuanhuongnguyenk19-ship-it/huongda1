@@ -330,6 +330,8 @@ button.mcard:active{background:var(--surface-2)}
 .dm{display:grid;grid-template-columns:230px minmax(0,1fr)}
 .nowrap{white-space:nowrap}
 body.portal .side,body.portal .top{display:none}body.portal .app{display:block}body.portal .main{margin:0;max-width:none}
+.wall-wrap{max-width:none;padding:16px 20px}.wall-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:2px solid var(--accent);padding-bottom:10px}.wall-h b{font-size:20px}.wall-h .actions{gap:8px}
+.wall-wrap .head{display:none}
 .portal-wrap{max-width:1040px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:16px}
 .portal-h{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;border-bottom:2px solid var(--accent);padding-bottom:10px}.portal-h>div{display:flex;flex-direction:column}.portal-h b{font-size:18px}
 @media print{body.portal .actions,body.portal .filters{display:none}}
@@ -548,7 +550,7 @@ function partnerStats(pid){
 }
 /* ---------- trạng thái giao diện ---------- */
 const ui={view:'dash',id:null,f:{type:'',status:'',q:''},page:1,debtTab:'ncc',pmode:'list',pf:'run',pq:'',otab:'rep',ktab:'ton',month:today().slice(0,7)};
-function go(view,id){ui.view=view;ui.id=id||null;$('#side').classList.remove('open');render();window.scrollTo(0,0);}
+function go(view,id){if(location.hash==='#dashboard')history.replaceState(null,'',location.pathname+location.search);ui.view=view;ui.id=id||null;$('#side').classList.remove('open');render();window.scrollTo(0,0);}
 function toast(msg){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,2600);}
 
 /* ---------- sidebar ---------- */
@@ -575,9 +577,10 @@ function renderSide(){
   $('#side').innerHTML=`
     <div class="brand"><div class="brand-mark">TĐ</div><div><b>Tín Đức ERP</b><small>LVL · Plywood</small></div></div>
     <div class="nav-group">Điều hành</div>
+    ${item('bi','Dashboard Ban giám đốc','chart')}
+    <button class="nav" data-act="wallOpen">${ico('chart')}<span>Màn hình theo dõi</span><span class="later">↗</span></button>
     ${item('dash','Tổng quan','dash')}
     ${item('inbox','Việc cần xử lý','inbox',n?`<span class="badge">${n}</span>`:'')}
-    ${item('bi','Dashboard Ban giám đốc','chart')}
     <div class="nav-group">Sản xuất</div>
     ${item('prod','Lệnh sản xuất','factory')}
     ${item('review','Duyệt sản lượng','inbox',nRev?`<span class="badge">${nRev}</span>`:'')}
@@ -642,7 +645,7 @@ function renderDash(){
   const u=USERS[S.role];
   return `
   <div class="head"><div><div class="crumb">Xin chào, ${esc(u.name)} · ${esc(u.title)}</div><h1>Tổng quan</h1></div>
-    <div class="actions"><button class="btn pri" data-act="new">+ Tạo đề xuất</button></div></div>
+    </div>
   <div class="tiles">${prodTiles}
     <button class="tile ${mine.length+prodTasks().length?'att':''}" data-act="go" data-v="inbox"><span class="k">Việc cần bạn xử lý</span><span class="v num">${mine.length+prodTasks().length}</span><span class="s">duyệt, chi tiền, sửa lại</span></button>
     <button class="tile" data-act="go" data-v="proposals" data-status="cho"><span class="k">Đề xuất đang chờ duyệt</span><span class="v num">${waiting.length}</span><span class="s">${can.viewAll()?'toàn công ty':'của bạn'}</span></button>
@@ -1544,7 +1547,7 @@ function renderBI(){
       ${T('Việc trễ hạn',S.hr.tasks.filter(t=>t.status!=='xong'&&t.due<today()).length,'','','tasks')}</div>
      <section class="panel"><div class="panel-h"><h2>Nhân sự theo phòng ban</h2></div><div class="panel-b">${bars(Object.entries(byDept).map(([k,v])=>({l:k,v})))}</div></section>`;
   }
-  return `<div class="head"><div><div class="crumb">Điều hành</div><h1>Dashboard Ban giám đốc</h1><div class="sub">Số liệu tổng hợp tự động từ mọi module, chỉ đọc. Bấm vào ô để mở chi tiết.</div></div></div>
+  return `<div class="head"><div><div class="crumb">Điều hành</div><h1>Dashboard Ban giám đốc</h1><div class="sub">Số liệu tổng hợp tự động từ mọi module, chỉ đọc. Bấm vào ô để mở chi tiết.</div></div><div class="actions"><button class="btn pri" data-act="wallOpen">⛶ Mở màn hình theo dõi</button></div></div>
   <section class="panel">${tabs}<div class="panel-b" style="display:flex;flex-direction:column;gap:18px">${body}</div></section>`;
 }
 
@@ -1607,6 +1610,7 @@ function renderAdmin(){
 
 /* ---------- render ---------- */
 function render(){
+  if(location.hash==='#dashboard'){document.body.classList.add('portal');$('#view').innerHTML=renderWall();return;}
   if(portalToken()){document.body.classList.add('portal');$('#view').innerHTML=renderPortal();return;}
   document.body.classList.remove('portal');
   renderSide();
@@ -2717,6 +2721,18 @@ Object.assign(A,{
 document.addEventListener('change',e=>{if(e.target.id==='qfrom'||e.target.id==='qto'){ui[e.target.id]=e.target.value;render();}});
 window.addEventListener('hashchange',()=>{closeModal();render();window.scrollTo(0,0);});
 
+/* màn hình theo dõi: dashboard đứng riêng, không có menu, tự làm mới */
+let wallAt='';
+function renderWall(){wallAt=new Date().toLocaleTimeString('vi-VN');
+  return `<div class="portal-wrap wall-wrap"><div class="wall-h"><div><b>Dashboard Ban giám đốc · Công ty Tín Đức</b><div class="sub">Cập nhật lúc ${wallAt} · tự làm mới mỗi 60 giây và ngay khi có dữ liệu mới · xem với quyền ${esc(USERS[S.role].title)}</div></div>
+    <div class="actions"><button class="btn" data-act="wallFull">⛶ Toàn màn hình</button><button class="btn" data-act="wallExit">← Về hệ thống</button></div></div>${renderBI()}</div>`;}
+Object.assign(A,{
+  wallOpen:()=>{if(!isRole('gd','admin','ktt','tbp','qd','hc')){toast('Chỉ Ban giám đốc và trưởng các bộ phận xem được dashboard.');return;}closeModal();location.hash='dashboard';},
+  wallExit:()=>{try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}ui.view='bi';location.hash='';},
+  wallFull:()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}catch(e){toast('Trình duyệt không cho bật toàn màn hình, hãy bấm F11.');}}
+});
+setInterval(()=>{if(location.hash==='#dashboard'&&!$('#modalRoot').innerHTML){load();render();}},60000);
+window.addEventListener('storage',e=>{if(e.key===KEY&&location.hash==='#dashboard'){load();render();}});
 load();renderRoleSel();render();
 })();
 </script>
