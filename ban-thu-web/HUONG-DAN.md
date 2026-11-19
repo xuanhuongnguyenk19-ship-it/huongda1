@@ -36,4 +36,5 @@ Chép `index.html` vào thư mục web của máy chủ (ví dụ `/var/www/tind
 ## Bảo mật
 
 - Trang không có mật khẩu: ai có đường link đều mở được.
-- Chỉ dùng dữ liệu mẫu, không nhập thông tin thật của công ty, nhân viên hay khách hàng.
+- Bản thử có họ tên, chức danh và phòng ban thật của nhân viên, cùng danh mục hàng hóa thật. Vì vậy chỉ đưa lên nơi có mật khẩu (ví dụ Netlify bật Password protection, hoặc VPS có đăng nhập), không để link công khai.
+- Không nhập thêm thông tin cá nhân (CCCD, số điện thoại, địa chỉ, tài khoản ngân hàng) vào bản thử.

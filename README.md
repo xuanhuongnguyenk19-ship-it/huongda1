@@ -7,7 +7,7 @@ Hệ thống quản trị doanh nghiệp cho Tín Đức, doanh nghiệp sản x
 | Giai đoạn | Nội dung | Tình trạng |
 |---|---|---|
 | 1 | Phân tích nghiệp vụ | Đã có tài liệu, đang chờ xác nhận các câu hỏi |
-| – | Bản thử giao diện (`ban-thu-web/`) | Đủ các module; đã làm chi tiết Công nợ |
+| – | Bản thử giao diện (`ban-thu-web/`) | Đủ các module; đã làm chi tiết Công nợ và Kho (danh mục 3 cấp, 6 kho, xuất nhập kho); đã nạp sơ đồ tổ chức, chức danh, nhân viên và danh mục hàng hóa từ sheet “Thông tin hệ thống” |
 | 2 | Thiết kế hệ thống: kiến trúc, CSDL, phân quyền | Chưa bắt đầu |
 | 3–5 | Thiết kế giao diện, lập trình, hoàn thiện | Chưa bắt đầu |
 
@@ -18,4 +18,8 @@ Hệ thống quản trị doanh nghiệp cho Tín Đức, doanh nghiệp sản x
 
 ## Lưu ý
 
-Bản thử chỉ để xem giao diện và thử quy trình. Không nhập dữ liệu thật của công ty, nhân viên hay khách hàng vào bản thử.
+Bản thử chỉ để xem giao diện và thử quy trình.
+
+Bản thử có chứa dữ liệu thật lấy từ sheet “Thông tin hệ thống”: sơ đồ tổ chức, chức danh, danh mục hàng hóa và danh sách nhân viên. Với nhân viên, bản thử chỉ lấy mã, họ tên, phòng, nhóm, chức danh, trạng thái và ngày chính thức. Không lấy CCCD, số điện thoại, email, địa chỉ, ngày sinh, MST, mã BHXH hay tài khoản ngân hàng, và không nhập các thông tin này vào bản thử. Chỉ đưa bản thử lên đường link có mật khẩu.
+
+Các số liệu khác trong bản thử (lương, đề xuất, công nợ, lệnh sản xuất, phiếu kho, giao việc) vẫn là dữ liệu mẫu.
